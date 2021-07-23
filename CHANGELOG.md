@@ -8,7 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 - Added Northern Ireland due to Brexit regulations [PR-872](https://github.com/OXID-eSales/oxideshop_ce/pull/872)
-
+- Events:
+    - `Internal\Transition\ShopEvents\AfterOrderLoadEvent`
+    
 ### Fixed
 - Use not extended OxidEsales\Eshop\Core\Module\Module in module chain generator error case. [PR-863](https://github.com/OXID-eSales/oxideshop_ce/pull/863)
 - Remove duplicated/redundant error message in case of InputException in UserComponent. [PR-713](https://github.com/OXID-eSales/oxideshop_ce/pull/713)

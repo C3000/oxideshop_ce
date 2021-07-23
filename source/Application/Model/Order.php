@@ -8,15 +8,13 @@
 namespace OxidEsales\EshopCommunity\Application\Model;
 
 use Exception;
-use oxArticleInputException;
-use OxidEsales\Eshop\Core\DatabaseProvider;
-use OxidEsales\Eshop\Core\Registry;
-use oxNoArticleException;
-use oxOutOfStockException;
 use oxField;
-use OxidEsales\Eshop\Core\Price as ShopPrice;
 use OxidEsales\Eshop\Application\Model\Payment as EshopPayment;
 use OxidEsales\Eshop\Application\Model\Voucher as EshopVoucherModel;
+use OxidEsales\Eshop\Core\DatabaseProvider;
+use OxidEsales\Eshop\Core\Price as ShopPrice;
+use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\EshopCommunity\Internal\Transition\ShopEvents\AfterOrderLoadEvent;
 
 /**
  * Order manager.
@@ -298,6 +296,15 @@ class Order extends \OxidEsales\Eshop\Core\Model\BaseModel
         // convert date's to international format
         $this->oxorder__oxorderdate = new \OxidEsales\Eshop\Core\Field($oUtilsDate->formatDBDate($this->oxorder__oxorderdate->value));
         $this->oxorder__oxsenddate = new \OxidEsales\Eshop\Core\Field($oUtilsDate->formatDBDate($this->oxorder__oxsenddate->value));
+    }
+
+    public function load($oxid)
+    {
+        $success = parent::load($oxid);
+        if ($success) {
+            $this->dispatchEvent(new AfterOrderLoadEvent($this));
+        }
+        return $success;
     }
 
     /**
