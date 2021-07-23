@@ -17,6 +17,7 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Transition\ShopEvents\AfterOrderFinalizeEvent;
 use OxidEsales\EshopCommunity\Internal\Transition\ShopEvents\AfterOrderValidatedEvent;
 use OxidEsales\EshopCommunity\Internal\Transition\ShopEvents\BeforeOrderDeleteEvent;
+use OxidEsales\EshopCommunity\Internal\Transition\ShopEvents\AfterOrderLoadEvent;
 
 /**
  * Order manager.
@@ -298,6 +299,15 @@ class Order extends \OxidEsales\Eshop\Core\Model\BaseModel
         // convert date's to international format
         $this->oxorder__oxorderdate = new \OxidEsales\Eshop\Core\Field($oUtilsDate->formatDBDate($this->oxorder__oxorderdate->value));
         $this->oxorder__oxsenddate = new \OxidEsales\Eshop\Core\Field($oUtilsDate->formatDBDate($this->oxorder__oxsenddate->value));
+    }
+
+    public function load($oxid)
+    {
+        $success = parent::load($oxid);
+        if ($success) {
+            $this->dispatchEvent(new AfterOrderLoadEvent($this));
+        }
+        return $success;
     }
 
     /**
