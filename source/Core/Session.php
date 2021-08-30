@@ -429,9 +429,9 @@ class Session extends \OxidEsales\Eshop\Core\Base
      */
     public function freeze()
     {
-        // storing basket ..
-        $this->setVariable($this->_getBasketName(), serialize($this->getBasket()));
+        $basket = $this->getBasket();
 
+        $this->setVariable($this->_getBasketName(), serialize($basket));
         session_write_close();
     }
 
