@@ -11,6 +11,7 @@ use OxidEsales\Eshop\Application\Model\Basket;
 use OxidEsales\Eshop\Application\Model\BasketItem;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\EshopCommunity\Internal\Transition\ShopEvents\AfterSessionBasketLoadEvent;
 
 /**
  * Session manager.
@@ -429,9 +430,9 @@ class Session extends \OxidEsales\Eshop\Core\Base
      */
     public function freeze()
     {
-        // storing basket ..
-        $this->setVariable($this->_getBasketName(), serialize($this->getBasket()));
+        $basket = $this->getBasket();
 
+        $this->setVariable($this->_getBasketName(), serialize($basket));
         session_write_close();
     }
 
@@ -568,6 +569,7 @@ class Session extends \OxidEsales\Eshop\Core\Base
 
             $this->_validateBasket($basket);
             $this->setBasket($basket);
+            $this->dispatchEvent(new AfterSessionBasketLoadEvent($this, $basket));
         }
 
         return $this->_oBasket;
