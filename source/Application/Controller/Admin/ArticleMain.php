@@ -8,6 +8,7 @@
 namespace OxidEsales\EshopCommunity\Application\Controller\Admin;
 
 use OxidEsales\Eshop\Core\DatabaseProvider;
+use OxidEsales\EshopCommunity\Internal\Transition\ShopEvents\AfterAdminControllerProductMainRenderEvent;
 use oxRegistry;
 use oxDb;
 use oxField;
@@ -30,8 +31,6 @@ class ArticleMain extends \OxidEsales\Eshop\Application\Controller\Admin\AdminDe
      */
     public function render()
     {
-        parent::render();
-
         $this->getConfig()->setConfigParam('bl_perfLoadPrice', true);
 
         $oArticle = $this->createArticle();
@@ -100,6 +99,8 @@ class ArticleMain extends \OxidEsales\Eshop\Application\Controller\Admin\AdminDe
             "details.tpl.css"
         );
         $this->_aViewData["blUseTimeCheck"] = $this->getConfig()->getConfigParam('blUseTimeCheck');
+
+        $this->dispatchEvent(new AfterAdminControllerProductMainRenderEvent($this, $oArticle));
 
         return "article_main.tpl";
     }
